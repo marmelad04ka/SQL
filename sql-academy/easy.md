@@ -21,3 +21,16 @@ SELECT name
 FROM Company;
 ```
 </details>
+
+*3. Вывести все рейсы, совершенные из Москвы ([ссылка](https://sql-academy.org/ru/trainer/tasks/3))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT *
+FROM Trip
+WHERE town_from LIKE 'Moscow'
+```
+</details>
+
