@@ -34,3 +34,15 @@ WHERE town_from LIKE 'Moscow'
 ```
 </details>
 
+*4. Вывести имена людей, которые заканчиваются на "man" ([ссылка](https://sql-academy.org/ru/trainer/tasks/4))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT name
+FROM Passenger
+WHERE name LIKE '%man'
+```
+</details>
+
