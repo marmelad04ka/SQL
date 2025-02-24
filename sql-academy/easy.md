@@ -10,3 +10,14 @@ SELECT name
 FROM Passenger
 ```
 </details>
+
+*2. Вывести названия всеx авиакомпаний ([ссылка](https://sql-academy.org/ru/trainer/tasks/2))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT name
+FROM Company;
+```
+</details>
