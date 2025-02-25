@@ -737,3 +737,142 @@ SELECT first_name,
 FROM Teacher;
 ```
 </details>
+
+*78. Выведите всех пользователей с электронной почтой в «hotmail.com» ([ссылка](https://sql-academy.org/ru/trainer/tasks/78))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT *
+FROM Users
+WHERE SUBSTRING_INDEX(email, '@', -1) = 'hotmail.com'
+```
+</details>
+
+*79. Выведите поля id, home_type, price у всего жилья из таблицы Rooms. Если комната имеет телевизор и интернет одновременно, то в качестве цены в поле price выведите цену, применив скидку 10%. ([ссылка](https://sql-academy.org/ru/trainer/tasks/79))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT id,
+	home_type,
+	CASE
+		WHEN has_tv = 1
+		AND has_internet = 1 THEN price * 0.9
+		ELSE price
+	END AS price
+FROM Rooms
+```
+</details>
+
+*80. Выведите поля id, home_type, price у всего жилья из таблицы Rooms. Если комната имеет телевизор и интернет одновременно, то в качестве цены в поле price выведите цену, применив скидку 10%. ([ссылка](https://sql-academy.org/ru/trainer/tasks/80))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+CREATE VIEW Verified_Users AS
+SELECT id,
+	name,
+	email
+FROM Users
+WHERE email_verified_at IS NOT NULL
+```
+</details>
+
+*93. Какой средний возраст клиентов, купивших Smartwatch (использовать наименование товара product.name) в 2024 году? ([ссылка](https://sql-academy.org/ru/trainer/tasks/93))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT avg(sq.avg) AS average_age
+FROM (
+		SELECT avg(age) AS avg
+		FROM Product p
+			JOIN Purchase pu USING(product_key)
+			JOIN Customer c USING(customer_key)
+		WHERE p.name = 'Smartwatch'
+			AND year(date) = '2024'
+		GROUP BY c.name
+	) AS sq
+```
+</details>
+
+*94. Вывести имена покупателей, каждый из которых приобрёл Laptop и Monitor (использовать наименование товара product.name) в марте 2024 года? ([ссылка](https://sql-academy.org/ru/trainer/tasks/94))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+WITH sq AS (
+	SELECT DISTINCT c.name
+	FROM Product p
+		JOIN Purchase pu USING(product_key)
+		JOIN Customer c USING(customer_key)
+	WHERE p.name = 'Laptop'
+		AND year(date) = '2024'
+		AND MONTH(date) = '03'
+)
+SELECT DISTINCT c.name
+FROM Product p
+	JOIN Purchase pu USING(product_key)
+	JOIN Customer c USING(customer_key)
+WHERE p.name = 'Monitor'
+	AND year(date) = '2024'
+	AND MONTH(date) = '03'
+	AND c.name IN (
+		SELECT *
+		FROM sq
+	)
+```
+</details>
+
+*97. Посчитать количество работающих складов на текущую дату по каждому городу. Вывести только те города, у которых количество складов более 80. Данные на выходе - город, количество складов. ([ссылка](https://sql-academy.org/ru/trainer/tasks/97))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT city,
+	COUNT(date_open) AS warehouse_count
+FROM Warehouses
+WHERE date_close IS NULL
+GROUP BY city
+HAVING COUNT(date_open) > 80
+```
+</details>
+
+*101. Выведи для каждого пользователя первое наименование, которое он заказал (первое по времени транзакции). ([ссылка](https://sql-academy.org/ru/trainer/tasks/101))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT user_id,
+	item
+FROM Transactions
+WHERE transaction_ts IN(
+		SELECT min(transaction_ts)
+		FROM Transactions
+		GROUP BY user_id
+		ORDER BY user_id
+	)
+```
+</details>
+
+*111. Посчитайте население каждого региона. В качестве результата выведите название региона и его численность населения. ([ссылка](https://sql-academy.org/ru/trainer/tasks/111))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT r.name AS region_name,
+	sum(c.population) AS total_population
+FROM Regions r
+	JOIN Cities c ON r.id = c.regionid
+GROUP BY r.name
+```
+</details>
