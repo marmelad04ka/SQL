@@ -467,3 +467,273 @@ SELECT MAX(good_id) + 1,
 FROM Goods
 ```
 </details>
+
+*52. Добавьте в список типов товаров (GoodTypes) новый тип "auto". ([ссылка](https://sql-academy.org/ru/trainer/tasks/52))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+INSERT INTO GoodTypes (good_type_id, good_type_name)
+SELECT COUNT(*) + 1,
+	'auto'
+FROM GoodTypes
+```
+</details>
+
+*54. Удалить всех членов семьи с фамилией "Quincey". ([ссылка](https://sql-academy.org/ru/trainer/tasks/54))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+DELETE FROM FamilyMembers
+WHERE member_name LIKE '%Quincey%';
+```
+</details>
+
+*57. Перенести расписание всех занятий на 30 мин. вперед. ([ссылка](https://sql-academy.org/ru/trainer/tasks/57))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+UPDATE Timepair
+SET start_pair = addtime(start_pair, '00:30:00'),
+	end_pair = addtime(end_pair, '00:30:00')
+```
+</details>
+
+*59. Вывести пользователей,указавших Белорусский номер телефона ? Телефонный код Белоруссии +375. ([ссылка](https://sql-academy.org/ru/trainer/tasks/59))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT *
+FROM Users
+WHERE phone_number LIKE '+375%';
+```
+</details>
+
+*61. Выведите список комнат, которые были зарезервированы хотя бы на одни сутки в 12-ую неделю 2020 года. ([ссылка](https://sql-academy.org/ru/trainer/tasks/61))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SET @start_date = '2020-01-01';
+SET @week = 12;
+WITH min_one_day AS (
+	SELECT room_id
+	FROM Reservations
+	WHERE start_date BETWEEN DATE_ADD(@start_date, INTERVAL @week * 7 - 6 DAY)
+		AND DATE_ADD(@start_date, INTERVAL @week * 7 DAY)
+)
+SELECT *
+FROM Rooms
+WHERE id IN (
+		SELECT *
+		FROM min_one_day
+	)
+```
+</details>
+
+*62. Вывести в порядке убывания популярности доменные имена 2-го уровня, используемые пользователями для электронной почты. Полученный результат необходимо дополнительно отсортировать по возрастанию названий доменных имён. ([ссылка](https://sql-academy.org/ru/trainer/tasks/62))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT SUBSTRING_INDEX(email, '@', -1) AS domain,
+	COUNT(SUBSTRING_INDEX(email, '@', -1)) AS COUNT
+FROM Users
+GROUP BY 1
+ORDER BY COUNT DESC,
+	domain
+```
+</details>
+
+*63. Выведите отсортированный список (по возрастанию) фамилий и имен студентов в виде Фамилия.И. ([ссылка](https://sql-academy.org/ru/trainer/tasks/63))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT CONCAT(last_name, '.', left(first_name, 1), '.') AS name
+FROM student
+WHERE last_name IS NOT NULL
+ORDER BY 1
+```
+</details>
+
+*64. Вывести количество бронирований по каждому месяцу каждого года, в которых было хотя бы 1 бронирование. Результат отсортируйте в порядке возрастания даты бронирования. ([ссылка](https://sql-academy.org/ru/trainer/tasks/64))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT year(start_date) AS year,
+	MONTH(start_date) AS MONTH,
+	COUNT(*) AS amount
+FROM Reservations
+GROUP BY year,
+	MONTH
+ORDER BY year,
+	MONTH
+```
+</details>
+
+*65. Необходимо вывести рейтинг для комнат, которые хоть раз арендовали, как среднее значение рейтинга отзывов округленное до целого вниз. ([ссылка](https://sql-academy.org/ru/trainer/tasks/65))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT room_id,
+	floor(AVG(rating)) AS rating
+FROM Reservations
+	JOIN Reviews ON Reservations.id = Reviews.reservation_id
+GROUP BY room_id
+```
+</details>
+
+*66. Вывести список комнат со всеми удобствами (наличие ТВ, интернета, кухни и кондиционера), а также общее количество дней и сумму за все дни аренды каждой из таких комнат. ([ссылка](https://sql-academy.org/ru/trainer/tasks/66))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT home_type,
+	ro.address,
+	sum(
+		CASE
+			WHEN re.price IS NOT NULL THEN total / re.price
+			ELSE 0
+		END
+	) AS days,
+	sum(
+		CASE
+			WHEN total IS NOT NULL THEN total
+			ELSE 0
+		END
+	) AS total_fee
+FROM Rooms ro
+	LEFT JOIN Reservations re ON ro.id = re.room_id
+WHERE has_tv = 1
+	AND has_internet = 1
+	AND has_kitchen = 1
+	AND has_air_con = 1
+GROUP BY home_type,
+	ro.address
+```
+</details>
+
+*67. Вывести время отлета и время прилета для каждого перелета в формате "ЧЧ:ММ, ДД.ММ - ЧЧ:ММ, ДД.ММ", где часы и минуты с ведущим нулем, а день и месяц без. ([ссылка](https://sql-academy.org/ru/trainer/tasks/67))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT CONCAT(
+		DATE_FORMAT(time_out, '%H:%i'),
+		', ',
+		DAY(time_out),
+		'.',
+		MONTH(time_out),
+		' - ',
+		DATE_FORMAT(time_in, '%H:%i'),
+		', ',
+		DAY(time_in),
+		'.',
+		MONTH(time_in)
+	) AS flight_time
+FROM trip
+```
+</details>
+
+*70. Необходимо категоризовать жилье на economy, comfort, premium по цене соответственно <= 100, 100 < цена < 200, >= 200. В качестве результата вывести таблицу с названием категории и количеством жилья, попадающего в данную категорию ([ссылка](https://sql-academy.org/ru/trainer/tasks/70))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT CASE
+		WHEN price <= 100 THEN 'economy'
+		WHEN price >= 200 THEN 'premium'
+		ELSE 'comfort'
+	END AS category,
+	COUNT(*) AS COUNT
+FROM Rooms
+GROUP BY 1
+```
+</details>
+
+*72. Выведите среднюю цену бронирования за сутки для каждой из комнат, которую бронировали хотя бы один раз. Среднюю цену необходимо округлить до целого значения вверх. ([ссылка](https://sql-academy.org/ru/trainer/tasks/72))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT room_id,
+	ceil(avg(price)) AS avg_price
+FROM reservations
+GROUP BY room_id
+```
+</details>
+
+*73. Выведите id тех комнат, которые арендовали нечетное количество раз ([ссылка](https://sql-academy.org/ru/trainer/tasks/73))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT room_id,
+	COUNT(*) AS COUNT
+FROM Reservations
+GROUP BY room_id
+HAVING COUNT(*) %2 = 1
+```
+</details>
+
+*76. Вывести имена всех пользователей сервиса бронирования жилья, а также два признака: является ли пользователь собственником какого-либо жилья (is_owner) и является ли пользователь арендатором (is_tenant). В случае наличия у пользователя признака необходимо вывести в соответствующее поле 1, иначе 0. ([ссылка](https://sql-academy.org/ru/trainer/tasks/76))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT name,
+	CASE
+		WHEN id IN (
+			SELECT owner_id
+			FROM Rooms
+		) THEN 1
+		ELSE 0
+	END AS is_owner,
+	CASE
+		WHEN id IN (
+			SELECT user_id
+			FROM Reservations
+		) THEN 1
+		ELSE 0
+	END AS is_tenant
+FROM Users
+```
+</details>
+
+*77. Создайте представление с именем "People", которое будет содержать список имен (first_name) и фамилий (last_name) всех студентов (Student) и преподавателей(Teacher) ([ссылка](https://sql-academy.org/ru/trainer/tasks/77))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+CREATE VIEW People AS
+SELECT first_name,
+	last_name
+FROM Student
+UNION
+SELECT first_name,
+	last_name
+FROM Teacher;
+```
+</details>
