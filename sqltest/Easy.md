@@ -649,3 +649,279 @@ from  DEPARTMENT
 order by 1
 ```
 </details>
+
+*62. Получите список сотрудников, работающих в подразделениях Marketing и Finance ([ссылка](https://sqltest.online/ru/question/simple/find-employees-by-department))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select EMP_NO, FIRST_NAME, LAST_NAME, DEPT_NO, JOB_CODE 
+from  EMPLOYEE 
+ join  DEPARTMENT using( DEPT_NO )
+where  DEPARTMENT in ('Marketing', 'Finance')
+order by 1
+```
+</details>
+
+*63. Найдите зарплату сотрудника по имени Phil Forest ([ссылка](https://sqltest.online/ru/question/simple/find-employee-salary))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select salary
+from employee
+where first_name = 'Phil'
+```
+</details>
+
+*64. Найдите сотрудников с зарплатой выше чем у Phil Forest ([ссылка](https://sqltest.online/ru/question/simple/find-employees-with-high-salaries))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  FIRST_NAME , LAST_NAME , SALARY 
+from  EMPLOYEE 
+where salary > (select  SALARY from  EMPLOYEE where  FIRST_NAME  = 'Phil')
+order by 3
+```
+</details>
+
+*65. Найдите сотрудников с зарплатой выше средней ([ссылка](https://sqltest.online/ru/question/simple/find-employees-with-salary-above-average))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  FIRST_NAME , LAST_NAME , SALARY 
+from  EMPLOYEE 
+where salary > (select avg(salary) from  EMPLOYEE )
+order by 3
+```
+</details>
+
+*66. Найдите клиентов с чётными значениями в поле CustomerID ([ссылка](https://sqltest.online/ru/question/simple/find-customers-with-even-numbers))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select CustomerID, FirstName, LastName
+from  Customer 
+where CustomerID % 2 = 0
+```
+</details>
+
+*67. Найдите клиентов чьи номера телефона начинаются с цифр 972 ([ссылка](https://sqltest.online/ru/question/simple/find-customers-by-phone-prefix))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select CustomerID, FirstName, LastName, Phone
+from  Customer 
+where  Phone like '972%'
+order by 1
+```
+</details>
+
+*68. Таблица Customer содержит дубликаты записей о клиентах. ([ссылка](https://sqltest.online/ru/question/simple/get-unique-customers-list))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select distinct FirstName, MiddleName, LastName, EmailAddress , Phone
+from customer
+order by 1,3
+```
+</details>
+
+*71. Определите страны, которые не используют доллар (Dollar) или евро (Euro) в качестве своей валюты. ([ссылка](https://sqltest.online/ru/question/simple/find-on-dollar-euro-countries))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select *
+from  COUNTRY 
+where  CURRENCY not in ('Dollar', 'Euro')
+order by  COUNTRY 
+```
+</details>
+
+*72. Получить все записи из таблицы JOB, в которых нет конкретных требований к кандидатам. ([ссылка](https://sqltest.online/ru/question/simple/jobs-without-specificrequirements))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  JOB_TITLE , MIN_SALARY , MAX_SALARY 
+from job
+where JOB_REQUIREMENT like '%No specific requirements.%' or JOB_REQUIREMENT is null
+order by 3 desc
+```
+</details>
+
+*73. Mark Guckenheimer назначен руководителем группы проекта Translator upgrade. Пожалуйста, обновите базу данных соответствующим образом. ([ссылка](https://sqltest.online/ru/question/simple/update-project-information))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+update project
+set team_leader = (
+select emp_no
+from  EMPLOYEE 
+where  FIRST_NAME = 'Mark')
+where  PROJ_NAME ='Translator upgrade'
+```
+</details>
+
+*76. Исключите из списка, созданного в предыдущей задаче, все товары, у которых не указан размер или вес. ([ссылка](https://sqltest.online/ru/question/simple/products-with-weight-and-size))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  ProductID , Name , ProductNumber , Size , Weight 
+from  Product 
+where size is not null and weight is not null
+order by name asc
+```
+</details>
+
+*77. Найдите десять товаров с максимальным весом. ([ссылка](https://sqltest.online/ru/question/simple/ten-heaviest-products))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select top(10) Name , Weight 
+from  Product 
+order by 2 desc,  ProductID 
+```
+</details>
+
+*78. Напишите SQL-запрос для выбора столбцов sex - пол и body_mass_g - масса тела из таблицы little_penguins, отсортированных таким образом, чтобы сначала отображалась пингвины с наибольшей масса тела. ([ссылка](https://sqltest.online/ru/question/simple/sort-penguins))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  sex , body_mass_g 
+from  little_penguins 
+order by  body_mass_g desc
+```
+</details>
+
+*79. Напишите запрос для выбора вида species и острова обитания island трех самых легких пингвинов из таблицы penguins. ([ссылка](https://sqltest.online/ru/question/simple/light-weight-penguins))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  species ,  island 
+from  penguins 
+order by  body_mass_g 
+limit 3
+```
+</details>
+
+*80. Напишите запрос, чтобы выбрать различные комбинации островов и проживающих на них видов пингвинов в отсортировав по названию острова и затем по названию вида. ([ссылка](https://sqltest.online/ru/question/simple/penguins-islands-distribution))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select distinct  island , species 
+from  penguins 
+group by 1,2
+```
+</details>
+
+*81. Напишите запрос для выбора пингвинов с массой тела менее 3000 граммов. ([ссылка](https://sqltest.online/ru/question/simple/small-penguins))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select *
+from  penguins 
+where  body_mass_g < 3000
+```
+</details>
+
+*82. Напишите еще один запрос к таблице penguins, чтобы выбрать вид и пол пингвинов весом менее 3000 граммов. ([ссылка](https://sqltest.online/ru/question/simple/small-penguins-species))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  species , sex
+from  penguins 
+where  body_mass_g < 3000
+```
+</details>
+
+*83. Найдите отношение длины плавника к массе тела для всех пингвинов из таблицы. ([ссылка](https://sqltest.online/ru/question/simple/flipper-length-to-body-mass-rate))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  species , sex ,  flipper_length_mm / body_mass_g as flipper_length_to_body_mass_rate
+from  penguins 
+order by 3
+```
+</details>
+
+*84. Напишите запрос, чтобы найти пингвинов, масса тела которых известна, но пол неизвестен. ([ссылка](https://sqltest.online/ru/question/simple/penguins-whose-sex-is-unknown))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select * 
+from  penguins 
+where sex is null and  body_mass_g is not null
+```
+</details>
+
+*85. Напишите запрос, чтобы выбрать остров обитания, пол и массу пингвинов вида Chinstrap с массой тела более четырёх килограмм, отсортированных по длине плавника в порядке убывания. ([ссылка](https://sqltest.online/ru/question/simple/heavy-chinstrap-penguins))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select island , sex , body_mass_g 
+from  penguins 
+where  species = 'Chinstrap' and  body_mass_g > 4000
+order by   flipper_length_mm desc
+```
+</details>
+
+*86. Подсчитайте количество пингвинов каждого вида. ([ссылка](https://sqltest.online/ru/question/simple/penguins-quantity))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  species , count( species ) as quantity
+from  penguins 
+group by  species 
+```
+</details>
+
+*87. Найдите количество видов пингвинов и количество островов, на которых они обитают. ([ссылка](https://sqltest.online/ru/question/simple/penguins-islands-quantity))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select count(distinct species ) as species , count(distinct island ) as islands
+from little_penguins
+```
+</details>
