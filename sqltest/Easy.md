@@ -350,3 +350,242 @@ from customer
 where active = 1
 ```
 </details>
+
+*27. Напишите SQL запрос, чтобы найти фильмы, стоимость проката которых выше средней стоимости всех фильмов. ([ссылка](https://sqltest.online/ru/question/simple/find-movies-with-above-average-rental-rates))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  film_id , title , rental_rate 
+from film
+where  rental_rate > (select avg( rental_rate ) from film)
+group by film_id
+order by 3 desc
+```
+</details>
+
+*28. Из таблицы customer выберите все записи о фамилии - last_name, имени - first_name и адресе электронной почты email отсортировав их по фамилии в алфавитном порядке. ([ссылка](https://sqltest.online/ru/question/simple/get-list-of-clients))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  last_name , first_name , email 
+from customer
+group by  customer_id 
+order by 1
+```
+</details>
+
+*29. Напишите SQL запрос, который выводит список уникальных значений rating из таблицы film в алфавитном порядке. ([ссылка](https://sqltest.online/ru/question/simple/get-a-list-of-movie-ratings))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select distinct rating 
+from film
+order by 1
+```
+</details>
+
+*30. Получить список таблиц в базе данных sakila. ([ссылка](https://sqltest.online/ru/question/simple/get-list-of-tables))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select table_name as Tables_in_sakila from INFORMATION_SCHEMA.TABLES where table_schema = 'sakila'; 
+```
+</details>
+
+*31. Получить определения столбцов таблицы address ([ссылка](https://sqltest.online/ru/question/simple/get-table-columns-data))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+DESCRIBE address
+```
+</details>
+
+*32. Получить список индексов таблицы film и их определений ([ссылка](https://sqltest.online/ru/question/simple/get-list-of-indexes))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SHOW INDEX FROM film;
+```
+</details>
+
+*33. Найдите фильмы из базы данных Sakila, в которых нет записей об актерах. ([ссылка](https://sqltest.online/ru/question/simple/find-movies-without-cast-records))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  title , release_year 
+from film f1
+where not exists (select film_id from film_actor f2 where f1.film_id = f2.film_id)
+```
+</details>
+
+*34. Фильмы с рейтингом PG (рекомендуется родительский контроль) и PG-13 (родители должны быть осторожны) могут просматриваться детьми только под контролем родителей. 
+Получите список этих фильмов в двух столбцах title, rating, отсортированных по названию. ([ссылка](https://sqltest.online/ru/question/simple/get-the-restricted-films-list))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  title , rating 
+from film
+where rating like '%PG%'
+```
+</details>
+
+*35. Фильмы с рейтингом R (Ограниченный доступ) и NC-17 (Только для взрослых) не могут быть взяты напрокат молодежью. 
+Получите список этих фильмов в две колонки title и rating, отсортированных по названию фильма. ([ссылка](https://sqltest.online/ru/question/simple/get-list-of-restricted-films))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  title , rating 
+from film
+where rating = 'R' or rating = 'NC-17'
+group by film_id
+order by 1
+```
+</details>
+
+*36. Найдите все фильмы с рейтингом NC-17 (только для взрослых), в описании которых содержится подстрока Database Administrator.  ([ссылка](https://sqltest.online/ru/question/simple/find-adult-only-films-about-database-administrator))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  title , description , release_year 
+from film
+where rating = 'NC-17' and  description like '%Database Administrator%'
+group by film_id
+order by 1
+```
+</details>
+
+*37. ННапишите запрос на добавление новой записи в таблицу address  ([ссылка](https://sqltest.online/ru/question/simple/create-new-address-record))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+insert into address( address , district , city_id , postal_code , phone )
+values('898 Homer St', 'Yaletown', 565, 26336, 0523323201)
+```
+</details>
+
+*38. Обновите почтовый индекс в таблице address по адресу 1411 Lillydale Drive на 365894.  ([ссылка](https://sqltest.online/ru/question/simple/update-the-postal-code))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+update address
+set  postal_code = 365894
+where  address = '1411 Lillydale Drive'
+```
+</details>
+
+*39. Удалите из таблицы customer записи о неактивных клиентах.  ([ссылка](https://sqltest.online/ru/question/simple/remove-customer-records))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+delete from customer
+where active = 0
+```
+</details>
+
+*40. Получите все записи из таблицы address, для которых не указан почтовый индекс.   ([ссылка](https://sqltest.online/ru/question/simple/find-addresses-without-postal-code))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select *
+from address
+where  postal_code is Null
+order by address_id
+```
+</details>
+
+*41. Получите все записи из таблицы address, где почтовый индекс представляет собой четное число.   ([ссылка](https://sqltest.online/ru/question/simple/find-an-addresses-with-even-postal-codes))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  address_id , postal_code 
+from address
+where postal_code%2 = 0
+order by 1
+```
+</details>
+
+*42. Составьте список фамилий встречающихся как среди пользователей так и среди актёров.   ([ссылка](https://sqltest.online/ru/question/simple/build-shared-surnames-list))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select last_name
+from customer
+intersect
+select last_name
+from actor
+order by 1
+```
+</details>
+
+*43. Получите список самолетов с дальностью полета более 5000 км. Отсортируйте результаты в порядке убывания дальности.   ([ссылка](https://sqltest.online/ru/question/simple/find-long-range-aircrafts))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select * 
+from  aircrafts_data 
+where  range > 5000
+order by range desc
+```
+</details>
+
+*44. Найдите в таблице customer имена палиндромы. ([ссылка](https://sqltest.online/ru/question/simple/find-the-palindrome-names))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  first_name
+from  customer 
+where first_name = reverse( first_name )
+group by  customer_id 
+order by  first_name 
+```
+</details>
+
+*53. Обновите стоимость аренды фильма и стоимость замены диска для фильмов в категории NC-17 (фильмы для взрослых). Напишите запрос который увеличивает стоимость проката на 20%, а стоимость замены на $5. ([ссылка](https://sqltest.online/ru/question/simple/perform-price-update))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+update film
+set  rental_rate =  rental_rate * 1.20,
+ replacement_cost = replacement_cost + 5
+ where  rating = 'NC-17'
+```
+</details>
+
