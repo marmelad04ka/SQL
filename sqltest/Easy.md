@@ -589,3 +589,63 @@ set  rental_rate =  rental_rate * 1.20,
 ```
 </details>
 
+*54. В адресе клиента JO FOWLER обнаружена ошибка. Исправьте её указав верный почтовый индекс 98322. ([ссылка](https://sqltest.online/ru/question/simple/update-customer-address))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+update address
+join customer using(address_id)
+set postal_code = 98322
+where first_name = 'JO'
+```
+</details>
+
+*55. Выполните коррекцию стоимости аренды фильмов следующим образом: стоимость аренды для фильмов в категории G должна быть снижена на 5%,  для фильмов в категориях R и NC-17 (фильмы для взрослых) повышена на 20%, для всех остальных фильмов стоимость повышается на 5%. ([ссылка](https://sqltest.online/ru/question/simple/adjust-the-rental-cost))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+update film
+set  rental_rate = case
+                        when  rating = 'G' then rental_rate * 0.95
+                        when rating = 'R' or rating = 'NC-17' then rental_rate * 1.2
+                        else rental_rate * 1.05
+                        end
+```
+</details>
+
+*56. Обновите таблицу film так чтобы стоимость замены replacement_cost стала равна пятикратной стоимости аренды rental_rate округленной вверх до ближайшего целого значения. ([ссылка](https://sqltest.online/ru/question/simple/update-replacement-cost))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+update film
+set replacement_cost = ceil(rental_rate * 5)
+```
+</details>
+
+*57. Напишите запрос, который возвращает завтрашнюю дату в формате ГГГГ-ММ-ДД в столбце с именем tomorrow. ([ссылка](https://sqltest.online/ru/question/simple/find-the-tomorrow-date))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+SELECT DATE_ADD(CURDATE(), INTERVAL 1 DAY) AS tomorrow;
+```
+</details>
+
+*60. Выведите список подразделений и их местонахождений отсортировав его по названию в алфавитном порядке. ([ссылка](https://sqltest.online/ru/question/simple/display-list-of-departments))*
+
+<details>
+<summary>Решение</summary>
+
+``` sql
+select  DEPARTMENT , LOCATION 
+from  DEPARTMENT 
+order by 1
+```
+</details>
