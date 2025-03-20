@@ -1,6 +1,6 @@
 # Решения бесплатных задач лёгкого уровня с сайта sqltest
 
-** Выберите все записи из таблицы actor. ([ссылка](https://sqltest.online/ru/question/simple/get-the-actors))*
+*1. Выберите все записи из таблицы actor. ([ссылка](https://sqltest.online/ru/question/simple/get-the-actors))*
 
 <details>
 <summary>Решение</summary>
