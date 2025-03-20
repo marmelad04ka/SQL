@@ -26,7 +26,7 @@ where city_id in (select city_id from city where city = 'London')
 ```
 </details>
 
-*3. Напишите запрос, который возвращает адреса и почтовые индексы всех адресов, расположенных в London, с помощью JOIN. ([ссылка](https://sqltest.online/ru/question/normal/find-addresses-using-join)*
+*3. Напишите запрос, который возвращает адреса и почтовые индексы всех адресов, расположенных в London, с помощью JOIN. ([ссылка](https://sqltest.online/ru/question/normal/find-addresses-using-join))*
 
 <details>
 <summary>Решение</summary>
@@ -39,7 +39,7 @@ where city = "London"
 ```
 </details>
 
-*4. Найдите все имена встречающиеся более одного раза. ([ссылка](https://sqltest.online/ru/question/normal/find-duplicate-actor-names)*
+*4. Найдите все имена встречающиеся более одного раза. ([ссылка](https://sqltest.online/ru/question/normal/find-duplicate-actor-names))*
 
 <details>
 <summary>Решение</summary>
